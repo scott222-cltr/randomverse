@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101114">
+<title>RANDOMVERSE — Explore Your Universe</title>
+<style>
+:root{color-scheme:dark;--bg:#101114;--panel:#191a1f;--line:#2b2c33;--muted:#999ba8;--text:#f6f6f8;--accent:#b9a5ff;--green:#9de5c1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.app{display:grid;grid-template-columns:235px minmax(0,1fr);min-height:100vh}
+aside{padding:27px 17px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow:auto}
+.brand{font-size:20px;font-weight:800;letter-spacing:-1px;padding:5px 10px 27px}
+.brand span{color:var(--accent)}
+.eyebrow{color:var(--muted);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;margin:19px 10px 9px}
+.nav{display:flex;align-items:center;gap:11px;width:100%;border:0;background:none;color:#bcbcc6;text-align:left;padding:11px 12px;border-radius:10px;margin:2px 0;font-size:13px}
+.nav:hover,.nav.active{background:#292633;color:white}
+.nav.active{box-shadow:inset 2px 0 var(--accent)}
+.sidebar-bottom{margin-top:28px;border-top:1px solid var(--line);padding:18px 10px;color:var(--muted);font-size:12px;line-height:1.7}
+main{padding:30px clamp(18px,4vw,55px);max-width:1450px;width:100%;margin:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:33px}
+.status{font-size:12px;color:var(--muted)}
+.pill{border:1px solid var(--line);background:var(--panel);border-radius:30px;padding:9px 13px;font-size:12px;color:white}
+.hero{padding:clamp(25px,5vw,56px);border:1px solid #34303f;border-radius:24px;background:radial-gradient(ellipse at 85% 15%,#4a396b77,transparent 42%),linear-gradient(130deg,#22212a,#17171c 65%);position:relative;overflow:hidden}
+.hero:after{content:"✳";position:absolute;right:7%;top:8%;font-size:clamp(90px,18vw,190px);color:#b9a5ff12;pointer-events:none}
+.kicker{color:var(--accent);font-size:11px;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:clamp(36px,6vw,68px);letter-spacing:-3px;line-height:1.03;margin:20px 0 15px;max-width:650px}
+h1 em{font-style:normal;color:var(--accent)}
+p{line-height:1.65}
+.hero p,.muted{color:var(--muted)}
+.hero p{max-width:500px;font-size:14px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}
+.primary,.secondary{border-radius:10px;padding:12px 17px;border:1px solid var(--line);font-weight:650;font-size:13px}
+.primary{background:var(--accent);color:#17131f;border-color:var(--accent)}
+.secondary{background:#222228;color:white}
+.primary:hover{filter:brightness(1.08)}.secondary:hover{background:#303039}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 34px}
+.stat,.card,.toolbox{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:20px}
+.stat small{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:27px;letter-spacing:-1px;margin-top:8px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:32px 0 15px}
+h2{font-size:22px;letter-spacing:-.8px;margin:0}
+h3{font-size:15px;margin:10px 0}
+.section-head p,.card p{font-size:12px;color:var(--muted);margin-bottom:0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.card{min-height:155px;transition:transform .18s,border-color .18s;cursor:pointer}
+.card:hover{transform:translateY(-3px);border-color:#6a5d86}
+.icon{font-size:24px;margin-bottom:15px}
+.card h3{font-size:15px}.card p{line-height:1.6}
+.view{display:none}.view.active{display:block}
+.workspace{margin-top:10px}
+.playarea{margin-top:20px;padding:clamp(18px,4vw,35px);border:1px solid var(--line);border-radius:18px;background:var(--panel)}
+.playarea h3{font-size:20px}
+.result{font-size:15px;min-height:26px;color:var(--green);margin-top:15px;white-space:pre-wrap;overflow-wrap:anywhere}
+.big-number{font-size:50px;letter-spacing:-2px;margin:15px 0}
+.field{width:100%;padding:12px;background:#101115;border:1px solid var(--line);border-radius:10px;color:white;margin:7px 0 13px}
+textarea.field{min-height:100px;resize:vertical}
+.swatches{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:18px 0}
+.swatch{height:90px;border-radius:10px;border:1px solid #ffffff20;display:flex;align-items:end;padding:6px;font-size:10px;text-shadow:0 1px 4px #000}
+.bar{height:5px;background:#333;border-radius:9px;overflow:hidden;margin-top:13px}.bar span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.footer{padding:35px 0 10px;color:var(--muted);font-size:11px}
+.mobile-nav{display:none}
+@media(max-width:850px){.app{grid-template-columns:1fr}aside{display:none}main{padding:20px 16px 90px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:28px 22px}h1{letter-spacing:-2px}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:5;background:#16161bee;backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:8px;gap:3px;overflow-x:auto}.mobile-nav .nav{min-width:64px;display:flex;flex-direction:column;gap:4px;justify-content:center;align-items:center;padding:8px 5px;font-size:10px}.stats{gap:8px}.stat{padding:13px}.stat strong{font-size:22px}}
+@media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.card{padding:14px;min-height:150px}.swatches{grid-template-columns:repeat(3,minmax(0,1fr))}.topbar{margin-bottom:22px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand">RANDOM<span>VERSE</span> ✳</div>
+  <div class="eyebrow">Discover</div>
+  <button class="nav active" data-view="home">⌂ &nbsp; Overview</button>
+  <button class="nav" data-view="games">▣ &nbsp; Arcade</button>
+  <button class="nav" data-view="random">✳ &nbsp; Randomiser</button>
+  <button class="nav" data-view="quiz">◇ &nbsp; Brain lab</button>
+  <button class="nav" data-view="creative">✎ &nbsp; Creative lab</button>
+  <div class="eyebrow">Your universe</div>
+  <button class="nav" data-view="progress">↗ &nbsp; Achievements</button>
+  <button class="nav" data-view="social">◎ &nbsp; Community</button>
+  <button class="nav" data-view="music">♫ &nbsp; Sound studio</button>
+  <button class="nav" data-view="tools">⌘ &nbsp; Toolbox</button>
+  <div class="sidebar-bottom">A little curiosity goes a long way.<br>Made for the wonderfully curious.</div>
+</aside>
+
+<main>
+<div class="topbar">
+  <div><div class="status">YOUR PERSONAL PLAYGROUND</div><div style="font-size:13px;margin-top:5px" id="date">Welcome back.</div></div>
+  <button class="pill" id="soundToggle">♫ Sound: off</button>
+</div>
+
+<section class="view active" id="view-home">
+<div class="hero">
+  <div class="kicker">A universe of possibilities</div>
+  <h1>Curiosity looks<br>good <em>on you.</em></h1>
+  <p>Play something. Learn something strange. Make something brilliant. Your next rabbit hole is just around the corner.</p>
+  <div class="actions"><button class="primary" data-go="random">Surprise me ↗</button><button class="secondary" data-go="games">Explore the arcade</button></div>
+</div>
+<div class="stats">
+ <div class="stat"><small>XP EARNED</small><strong id="xp">0</strong></div>
+ <div class="stat"><small>ACTIVITIES</small><strong id="activities">0</strong></div>
+ <div class="stat"><small>LEVEL</small><strong id="level">1</strong></div>
+</div>
+<div class="section-head"><div><h2>Explore your universe</h2><p>Eight ways to spend your next five minutes.</p></div></div>
+<div class="grid">
+ <div class="card" data-go="games"><div class="icon">🎮</div><h3>Arcade</h3><p>Test your reflexes. Beat your best.</p></div>
+ <div class="card" data-go="random"><div class="icon">🪐</div><h3>Randomiser</h3><p>Discover something unexpected.</p></div>
+ <div class="card" data-go="quiz"><div class="icon">🧠</div><h3>Brain lab</h3><p>Trivia, riddles and quick quizzes.</p></div>
+ <div class="card" data-go="creative"><div class="icon">🎨</div><h3>Creative lab</h3><p>Make names, stories and palettes.</p></div>
+ <div class="card" data-go="progress"><div class="icon">🏆</div><h3>Achievements</h3><p>Earn XP as you explore.</p></div>
+ <div class="card" data-go="social"><div class="icon">🌐</div><h3>Community</h3><p>Your future social space.</p></div>
+ <div class="card" data-go="music"><div class="icon">🎧</div><h3>Sound studio</h3><p>Play a little soundscape.</p></div>
+ <div class="card" data-go="tools"><div class="icon">⏱️</div><h3>Toolbox</h3><p>Timers, focus and useful extras.</p></div>
+ <div class="card" data-go="random"><div class="icon">✨</div><h3>Wild card</h3><p>Let fate decide what happens next.</p></div>
+</div>
+</section>
+
+<section class="view" id="view-games">
+<div class="kicker">PLAY / COMPETE / REPEAT</div><h1 style="font-size:44px">The <em>arcade.</em></h1><p class="muted">Quick games. No downloads. Just you versus the challenge.</p>
+<div class="grid">
+ <div class="card" data-game="reaction"><div class="icon">⚡</div><h3>Reaction test</h3><p>How fast are your reflexes?</p></div>
+ <div class="card" data-game="number"><div class="icon">🔢</div><h3>Number hunter</h3><p>Find the hidden number.</p></div>
+ <div class="card" data-game="click"><div class="icon">👆</div><h3>Click sprint</h3><p>How many clicks in five seconds?</p></div>
+ <div class="card" data-game="memory"><div class="icon">🧩</div><h3>Memory challenge</h3><p>Remember the sequence.</p></div>
+</div>
+<div class="playarea" id="gameArea"><h3>Choose your challenge</h3><p class="muted">Select a game above to get started.</p><div class="result" id="gameResult"></div></div>
+</section>
+
+<section class="view" id="view-random">
+<div class="kicker">EXPECT THE UNEXPECTED</div><h1 style="font-size:44px">The <em>randomiser.</em></h1><p class="muted">For when you want a decision made, a fact discovered or a little inspiration.</p>
+<div class="grid">
+ <div class="card" data-random="fact"><div class="icon">🌍</div><h3>Strange facts</h3><p>Give your brain a new fact.</p></div>
+ <div class="card" data-random="decision"><div class="icon">🎲</div><h3>Decision maker</h3><p>Let chance pick for you.</p></div>
+ <div class="card" data-random="challenge"><div class="icon">🚀</div><h3>Daily challenge</h3><p>Try something different.</p></div>
+ <div class="card" data-random="prompt"><div class="icon">💡</div><h3>Idea generator</h3><p>Find your next project.</p></div>
+</div>
+<div class="playarea"><h3>Your next discovery</h3><div class="big-number" id="randomIcon">✳</div><div id="randomResult" class="result">Ready when you are.</div><div class="actions"><button class="primary" id="randomBtn">Surprise me</button></div><p class="muted">Have your own options? Enter them below for a custom decision.</p><textarea class="field" id="optionsInput" placeholder="Pizza&#10;Burgers&#10;Tacos"></textarea><button class="secondary" id="chooseBtn">Choose for me</button></div>
+</section>
+
+<section class="view" id="view-quiz">
+<div class="kicker">GIVE YOUR BRAIN A WORKOUT</div><h1 style="font-size:44px">Brain <em>lab.</em></h1><p class="muted">Short quizzes to test your knowledge and reasoning.</p>
+<div class="playarea"><div class="status" id="quizCount">QUESTION 1</div><h3 id="question">Ready for a quick challenge?</h3><div id="answers" class="actions"></div><div id="quizResult" class="result"></div><div class="actions"><button class="primary" id="nextQuestion">Start quiz</button></div></div>
+</section>
+
+<section class="view" id="view-creative">
+<div class="kicker">MAKE SOMETHING YOURS</div><h1 style="font-size:44px">Creative <em>lab.</em></h1><p class="muted">Little tools to turn a blank page into something interesting.</p>
+<div class="playarea"><h3>Username generator</h3><p class="muted">Find a name for a game, project or online profile.</p><button class="primary" id="usernameBtn">Generate username</button><div class="result" id="usernameResult"></div></div>
+<div class="playarea"><h3>Story starter</h3><p class="muted">A random opening for your next story.</p><button class="primary" id="storyBtn">Inspire me</button><div class="result" id="storyResult"></div></div>
+<div class="playarea"><h3>Colour palette studio</h3><p class="muted">Generate five colours. Click a swatch to copy its hex code.</p><div class="swatches" id="swatches"></div><button class="primary" id="paletteBtn">New palette</button><div class="result" id="paletteResult"></div></div>
+<div class="playarea"><h3>Idea vault</h3><textarea class="field" id="ideaInput" placeholder="Write down an idea you don't want to forget..."></textarea><button class="primary" id="saveIdea">Save idea</button><div class="result" id="ideaResult"></div><div id="ideasList"></div></div>
+</section>
+
+<section class="view" id="view-progress">
+<div class="kicker">EVERY LITTLE WIN COUNTS</div><h1 style="font-size:44px">Your <em>progress.</em></h1><p class="muted">Your activity and achievements are saved on this device in this first version.</p>
+<div class="stats"><div class="stat"><small>TOTAL XP</small><strong id="xp2">0</strong></div><div class="stat"><small>LEVEL</small><strong id="level2">1</strong></div><div class="stat"><small>ACTIVITIES</small><strong id="activities2">0</strong></div></div>
+<div class="playarea"><h3 id="levelTitle">Curious beginner</h3><p class="muted" id="levelDescription">Every explorer starts somewhere.</p><div class="bar"><span id="xpBar"></span></div><p class="muted" id="xpText"></p></div>
+<div class="playarea"><h3>Achievements</h3><div id="achievements"></div></div>
+</section>
+
+<section class="view" id="view-social">
+<div class="kicker">A PLACE TO CONNECT</div><h1 style="font-size:44px">The <em>community.</em></h1>
+<div class="playarea"><div class="icon">🌐</div><h3>Your social universe is next.</h3><p class="muted">This preview is ready for the next stage: real accounts, public profiles, shared scores, leaderboards, community chat and moderation.</p><p>Those features need a connected database and secure server-side permissions. This first version doesn't pretend to publish messages to other visitors.</p><button class="primary" data-go="home">Keep exploring</button></div>
+</section>
+
+<section class="view" id="view-music">
+<div class="kicker">FIND YOUR FOCUS</div><h1 style="font-size:44px">Sound <em>studio.</em></h1>
+<div class="playarea"><div class="icon">🎧</div><h3>Ambient sound generator</h3><p class="muted">Generate a gentle tone directly in your browser. No music files or external streaming required.</p><label for="tone">Tone frequency</label><input class="field" id="tone" type="range" min="100" max="800" value="220"><div id="toneValue" class="muted">220 Hz</div><div class="actions"><button class="primary" id="toneToggle">Start tone</button><button class="secondary" id="toneStop">Stop</button></div><p class="muted">Your browser may ask for permission to start audio after a click.</p></div>
+</section>
+
+<section class="view" id="view-tools">
+<div class="kicker">SMALL TOOLS. BIG HELP.</div><h1 style="font-size:44px">Your <em>toolbox.</em></h1>
+<div class="playarea"><h3>Focus timer</h3><p class="muted">Choose a duration and start your next focused session.</p><input class="field" id="minutes" type="number" min="1" max="180" value="5"><div class="big-number" id="timerDisplay">05:00</div><div class="actions"><button class="primary" id="timerStart">Start</button><button class="secondary" id="timerPause">Pause</button><button class="secondary" id="timerReset">Reset</button></div><div class="result" id="timerResult"></div></div>
+<div class="playarea"><h3>Quick calculator</h3><p class="muted">Add two numbers together.</p><input class="field" id="numA" type="number" placeholder="First number"><input class="field" id="numB" type="number" placeholder="Second number"><button class="primary" id="calculate">Calculate</button><div class="result" id="calcResult"></div></div>
+<div class="playarea"><h3>Decision journal</h3><p class="muted">Write a decision you are thinking about and use the randomiser to break a tie.</p><textarea class="field" id="journalInput" placeholder="What are you deciding?"></textarea><button class="secondary" id="journalSave">Save on this device</button><div class="result" id="journalResult"></div></div>
+</section>
+<div class="footer">RANDOMVERSE · YOUR UNIVERSE, YOUR RULES · <span id="year"></span></div>
+</main>
+</div>
+
+<nav class="mobile-nav">
+<button class="nav active" data-view="home">⌂<span>Home</span></button>
+<button class="nav" data-view="games">▣<span>Games</span></button>
+<button class="nav" data-view="random">✳<span>Random</span></button>
+<button class="nav" data-view="quiz">◇<span>Quiz</span></button>
+<button class="nav" data-view="creative">✎<span>Create</span></button>
+<button class="nav" data-view="tools">⌘<span>Tools</span></button>
+<button class="nav" data-view="progress">↗<span>Progress</span></button>
+</nav>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
+const save=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
+let state=read("rv-state",{xp:0,activities:0,played:[],bestReaction:null});
+function reward(name,points=10){
+ state.xp+=points;state.activities++;if(!state.played.includes(name))state.played.push(name);
+ save("rv-state",state);renderProgress();
+}
+function renderProgress(){
+ ["xp","xp2"].forEach(id=>$(id).textContent=state.xp);
+ ["activities","activities2"].forEach(id=>$(id).textContent=state.activities);
+ ["level","level2"].forEach(id=>$(id).textContent=Math.floor(state.xp/100)+1);
+ $("xpBar").style.width=(state.xp%100)+"%";
+ $("xpText").textContent=(100-state.xp%100)+" XP until the next level";
+ const level=Math.floor(state.xp/100)+1;
+ $("levelTitle").textContent=level>=5?"Universe explorer":level>=3?"Curious adventurer":"Curious beginner";
+ $("levelDescription").textContent="Level "+level+" · "+state.xp+" total XP";
+ $("achievements").innerHTML=[
+ ["First steps",state.activities>=1,"Complete your first activity."],
+ ["Curious mind",state.activities>=5,"Complete five activities."],
+ ["Explorer",state.played.length>=4,"Try four different activities."],
+ ["Century club",state.xp>=100,"Earn 100 XP."],
+ ["Speed demon",state.bestReaction!==null,"Complete a reaction test."]
+ ].map(a=>`<div style="padding:13px 0;border-bottom:1px solid var(--line)">${a[1]?"🏆":"🔒"} <strong>${a[0]}</strong><div class="muted" style="font-size:12px;margin:5px 0 0 29px">${a[2]}</div></div>`).join("");
+}
+function go(view){
+ document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));
+ document.querySelectorAll("[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.addEventListener("click",e=>{
+ const nav=e.target.closest("[data-view]");if(nav)go(nav.dataset.view);
+ const goBtn=e.target.closest("[data-go]");if(goBtn)go(goBtn.dataset.go);
+});
+$("date").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
+$("year").textContent=new Date().getFullYear();
+
+const facts=[
+"Octopuses have three hearts.",
+"A day on Venus is longer than its year.",
+"Bananas are berries in botanical terms, but strawberries aren't.",
+"Sharks existed before trees.",
+"Some turtles can absorb oxygen through specialised tissue near their tails.",
+"A group of flamingos is called a flamboyance.",
+"Lightning can heat the surrounding air to temperatures hotter than the surface of the Sun.",
+"Your brain uses electrical and chemical signals to process information."
+];
+const challenges=["Learn one new word today.","Spend five minutes making something.","Take a short screen break.","Write down three ideas.","Solve a puzzle without looking up the answer.","Explore a topic you know nothing about."];
+const prompts=["A mysterious door appears in your bedroom wall...","Tomorrow, every clock in the world stops.","You receive a message from your future self.","A tiny planet appears in your garden.","You discover a website that predicts tomorrow.","A forgotten invention changes the world."];
+const ideas=["Build a tiny game","Learn a surprising fact","Design a fictional world","Try a new creative hobby","Write a story in six sentences"];
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+let randomMode="fact";
+function showRandom(mode=randomMode){
+ randomMode=mode;let value;
+ if(mode==="fact")value=pick(facts);
+ if(mode==="decision")value=pick(["Yes!","Not this time.","Flip a coin and decide.","Try it for ten minutes.","Sleep on it and revisit tomorrow."]);
+ if(mode==="challenge")value=pick(challenges);
+ if(mode==="prompt")value=pick(ideas);
+ $("randomIcon").textContent=pick(["✳","✦","✧","✺","❋"]);
+ $("randomResult").textContent=value;reward("random-"+mode,5);
+}
+document.querySelectorAll("[data-random]").forEach(b=>b.addEventListener("click",()=>showRandom(b.dataset.random)));
+$("randomBtn").onclick=()=>showRandom();
+$("chooseBtn").onclick=()=>{
+ const opts=$("optionsInput").value.split("\n").map(x=>x.trim()).filter(Boolean);
+ $("randomResult").textContent=opts.length?pick(opts):"Add at least two options, one per line.";if(opts.length)reward("custom-decision",5);
+};
+
+const quiz=[
+{q:"Which planet is known as the Red Planet?",a:["Venus","Mars","Jupiter","Mercury"],correct:1},
+{q:"What is 12 × 8?",a:["86","92","96","108"],correct:2},
+{q:"Which animal is a mammal?",a:["Shark","Dolphin","Trout","Octopus"],correct:1},
+{q:"How many sides does a hexagon have?",a:["Five","Six","Seven","Eight"],correct:1},
+{q:"Which is the largest ocean?",a:["Atlantic","Indian","Arctic","Pacific"],correct:3},
+{q:"What is the chemical symbol for gold?",a:["Ag","Go","Au","Gd"],correct:2},
+{q:"Which language runs natively in a web browser?",a:["JavaScript","Python","C#","Rust"],correct:0}
+];
+let qi=0,quizStarted=false,quizScore=0,answered=false;
+function showQuestion(){
+ answered=false;const q=quiz[qi%quiz.length];
+ $("quizCount").textContent="QUESTION "+(qi%quiz.length+1)+" OF "+quiz.length;
+ $("question").textContent=q.q;$("quizResult").textContent="";
+ $("answers").innerHTML=q.a.map((a,i)=>`<button class="secondary answer" data-answer="${i}">${a}</button>`).join("");
+ $("nextQuestion").textContent="Next question";
+}
+$("nextQuestion").onclick=()=>{
+ if(!quizStarted){quizStarted=true;qi=0;quizScore=0;showQuestion();return}
+ if(!answered){$("quizResult").textContent="Choose an answer first.";return}
+ qi++;
+ if(qi>=quiz.length){$("question").textContent="Quiz complete!";$("answers").innerHTML="";$("quizCount").textContent="FINAL SCORE";$("quizResult").textContent=`You scored ${quizScore} out of ${quiz.length}.`;reward("quiz",10+quizScore*5);$("nextQuestion").textContent="Play again";quizStarted=false;return}
+ showQuestion();
+};
+$("answers").addEventListener("click",e=>{
+ const b=e.target.closest("[data-answer]");if(!b||answered)return;answered=true;
+ const q=quiz[qi%quiz.length];const correct=Number(b.dataset.answer)===q.correct;
+ if(correct)quizScore++;
+ $("quizResult").textContent=correct?"Correct! Nice work.":"Not quite — the answer is "+q.a[q.correct]+".";
+ $("answers").querySelectorAll("button").forEach(x=>x.disabled=true);
+ if(correct)b.style.borderColor="var(--green)";
+});
+
+let gameInterval=null,gameTimeout=null,clickCount=0,reactStart=0,reactTimer=null,secret=0,tries=0,memorySequence=[],memoryIndex=0;
+function clearGame(){clearTimeout(gameTimeout);clearInterval(gameInterval);clearTimeout(reactTimer);gameTimeout=gameInterval=reactTimer=null}
+function startGame(type){
+ clearGame();const area=$("gameArea"),r=$("gameResult");
+ if(type==="reaction"){
+ area.innerHTML='<h3>Reaction test</h3><p class="muted">Wait until the panel turns green, then click it as quickly as you can.</p><button class="secondary" id="reactButton" style="width:100%;min-height:130px">Click to begin</button><div class="result" id="gameResult"></div>';
+ $("reactButton").onclick=()=>{
+  if($("reactButton").dataset.waiting==="yes"){clearTimeout(reactTimer);$("reactButton").dataset.waiting="";const ms=performance.now()-reactStart;$("gameResult").textContent="Your reaction time: "+Math.round(ms)+" ms";if(state.bestReaction===null||ms<state.bestReaction)state.bestReaction=Math.round(ms);save("rv-state",state);reward("reaction",15);return}
+  clearGame();$("reactButton").style.background="#7a302f";$("reactButton").textContent="Wait for green...";
+  reactTimer=setTimeout(()=>{if(!$("reactButton"))return;$("reactButton").style.background="#285a45";$("reactButton").textContent="CLICK NOW!";$("reactButton").dataset.waiting="yes";reactStart=performance.now()},1000+Math.random()*3000);
+ };return;
+ }
+ if(type==="number"){
+ secret=1+Math.floor(Math.random()*100);tries=0;
+ area.innerHTML='<h3>Number hunter</h3><p class="muted">Guess the number from 1 to 100.</p><input class="field" id="guessInput" type="number" min="1" max="100" placeholder="Your guess"><button class="primary" id="guessButton">Guess</button><div class="result" id="gameResult"></div>';
+ $("guessButton").onclick=()=>{const n=Number($("guessInput").value);if(n<1||n>100||!Number.isInteger(n)){$("gameResult").textContent="Enter a whole number from 1 to 100.";return}tries++;if(n===secret){$("gameResult").textContent=`You got it in ${tries} guesses!`;reward("number",15)}else $("gameResult").textContent=n<secret?"Too low. Go higher!":"Too high. Go lower!";};return;
+ }
+ if(type==="click"){
+ area.innerHTML='<h3>Click sprint</h3><p class="muted">Click as many times as you can in five seconds.</p><button class="primary" id="sprint" style="width:100%;min-height:100px">Start sprint</button><div class="result" id="gameResult"></div>';
+ $("sprint").onclick=()=>{if($("sprint").dataset.running==="yes"){clickCount++;$("sprint").textContent=clickCount+" clicks";return}clickCount=0;$("sprint").dataset.running="yes";$("sprint").textContent="0 clicks";gameTimeout=setTimeout(()=>{if(!$("sprint"))return;$("sprint").dataset.running="";$("gameResult").textContent=`Time! You scored ${clickCount} clicks.`;reward("click-sprint",10)},5000)};return;
+ }
+ if(type==="memory"){
+ memorySequence=Array.from({length:5},()=>Math.floor(Math.random()*9)+1);memoryIndex=0;
+ area.innerHTML='<h3>Memory challenge</h3><p class="muted">Memorise the sequence, then enter it in the same order.</p><div class="big-number" id="memoryShow"></div><input class="field" id="memoryInput" placeholder="Enter the digits, e.g. 12345"><button class="primary" id="memoryCheck">Check sequence</button><div class="result" id="gameResult"></div>';
+ $("memoryShow").textContent=memorySequence.join(" · ");
+ gameTimeout=setTimeout(()=>{if($("memoryShow"))$("memoryShow").textContent="•••••"},2500);
+ $("memoryCheck").onclick=()=>{const ok=$("memoryInput").value.replace(/\D/g,"")===memorySequence.join("");$("gameResult").textContent=ok?"Perfect memory! You got it right.":"Not quite. The sequence was "+memorySequence.join("");if(ok)reward("memory",15)};return;
+ }
+}
+document.querySelectorAll("[data-game]").forEach(b=>b.addEventListener("click",()=>startGame(b.dataset.game)));
+
+const adjectives=["Cosmic","Velvet","Hidden","Silver","Pixel","Lunar","Quiet","Neon","Lucky","Misty"];
+const nouns=["Fox","Orbit","Comet","Echo","Otter","Voyager","Nova","Pebble","Raven","Panda"];
+$("usernameBtn").onclick=()=>{$("usernameResult").textContent=pick(adjectives)+pick(nouns)+Math.floor(Math.random()*99+1);reward("username",5)};
+$("storyBtn").onclick=()=>{$("storyResult").textContent=pick(prompts);reward("story",5)};
+function makePalette(){
+ const hex=()=>"#"+Math.floor(Math.random()*16777215).toString(16).padStart(6,"0");
+ $("swatches").innerHTML=Array.from({length:5},()=>hex()).map(c=>`<button class="swatch" data-colour="${c}" style="background:${c}">${c}</button>`).join("");
+ $("paletteResult").textContent="Click a colour to copy its code.";
+}
+$("paletteBtn").onclick=()=>{makePalette();reward("palette",5)};
+$("swatches").onclick=async e=>{const b=e.target.closest("[data-colour]");if(!b)return;try{await navigator.clipboard.writeText(b.dataset.colour);$("paletteResult").textContent="Copied "+b.dataset.colour}catch{$("paletteResult").textContent=b.dataset.colour+" (select and copy)"}};
+makePalette();
+let ideasSaved=read("rv-ideas",[]);
+function renderIdeas(){$("ideasList").innerHTML=ideasSaved.map((x,i)=>`<div style="padding:12px 0;border-bottom:1px solid var(--line)">${escapeText(x)} <button class="secondary" data-delete-idea="${i}" style="float:right;padding:5px 9px">Delete</button></div>`).join("")}
+function escapeText(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("saveIdea").onclick=()=>{const v=$("ideaInput").value.trim();if(!v){$("ideaResult").textContent="Write an idea first.";return}ideasSaved.unshift(v);save("rv-ideas",ideasSaved);$("ideaInput").value="";$("ideaResult").textContent="Idea saved on this device.";renderIdeas();reward("idea",5)};
+$("ideasList").onclick=e=>{const b=e.target.closest("[data-delete-idea]");if(!b)return;ideasSaved.splice(Number(b.dataset.deleteIdea),1);save("rv-ideas",ideasSaved);renderIdeas()};
+renderIdeas();
+
+let timerRemaining=300,timerInterval=null;
+function displayTimer(){$("timerDisplay").textContent=String(Math.floor(timerRemaining/60)).padStart(2,"0")+":"+String(timerRemaining%60).padStart(2,"0")}
+$("minutes").onchange=()=>{if(!timerInterval){timerRemaining=Math.max(60,Math.min(10800,Number($("minutes").value)*60||300));displayTimer()}};
+$("timerStart").onclick=()=>{if(timerInterval)return;if(timerRemaining<=0)timerRemaining=Math.max(60,Number($("minutes").value)*60||300);$("timerResult").textContent="Focus time. You've got this.";timerInterval=setInterval(()=>{timerRemaining--;displayTimer();if(timerRemaining<=0){clearInterval(timerInterval);timerInterval=null;$("timerResult").textContent="Session complete. Well done!";reward("focus-timer",10)}},1000)};
+$("timerPause").onclick=()=>{clearInterval(timerInterval);timerInterval=null;$("timerResult").textContent="Timer paused."};
+$("timerReset").onclick=()=>{clearInterval(timerInterval);timerInterval=null;timerRemaining=Math.max(60,Number($("minutes").value)*60||300);displayTimer();$("timerResult").textContent="Timer reset."};
+displayTimer();
+$("calculate").onclick=()=>{const a=$("numA").value,b=$("numB").value;if(a===""||b===""){$("calcResult").textContent="Enter both numbers.";return}$("calcResult").textContent="Result: "+(Number(a)+Number(b));reward("calculator",2)};
+$("journalSave").onclick=()=>{save("rv-journal",$("journalInput").value);$("journalResult").textContent="Saved privately on this device."};
+
+let audioContext=null,oscillator=null,gainNode=null,audioOn=false;
+function stopTone(){if(oscillator){try{oscillator.stop()}catch{}oscillator=null}audioOn=false;$("toneToggle").textContent="Start tone";$("soundToggle").textContent="♫ Sound: off"}
+$("toneToggle").onclick=async()=>{if(audioOn){stopTone();return}try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();await audioContext.resume();oscillator=audioContext.createOscillator();gainNode=audioContext.createGain();oscillator.type="sine";oscillator.frequency.value=Number($("tone").value);gainNode.gain.value=.035;oscillator.connect(gainNode);gainNode.connect(audioContext.destination);oscillator.start();audioOn=true;$("toneToggle").textContent="Stop tone";$("soundToggle").textContent="♫ Sound: on"}catch{$("toneValue").textContent="Audio is not available in this browser."}};
+$("tone").oninput=()=>{const v=Number($("tone").value);$("toneValue").textContent=v+" Hz";if(oscillator)oscillator.frequency.value=v};
+$("toneStop").onclick=stopTone;
+$("soundToggle").onclick=()=>{if(audioOn)stopTone();else $("toneToggle").click()};
+
+renderProgress();
+</script>
+</body>
+</html>
